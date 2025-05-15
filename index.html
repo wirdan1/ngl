@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pesan Anonim</title>
+    <link rel="icon" type="image/png" href="ngl.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ff8c00, #fff8f0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    h1 {
+      color: #ff6b00;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus {
+      border-color: #ff6b00;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #ff6b00;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e55b00;
+    }
+
+    img {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Pesan Anonim</h1>
+    <input type="text" id="title" placeholder="Judul Pesan">
+    <input type="text" id="text" placeholder="Isi Pesan">
+    <button onclick="generateImage()">Buat Pesan</button>
+    <img id="outputImage" src="" alt="Gambar hasil">
+  </div>
+
+  <script>
+    const BOT_TOKEN = '7685950301:AAHFn9tDoEnWsVTfTSC-ld4TBPsdwj0UK7Y'; // Ganti dengan token bot kamu
+    const CHAT_ID = '7638505301';     // Ganti dengan chat_id kamu
+
+    function generateImage() {
+      const title = document.getElementById("title").value.trim();
+      const text = document.getElementById("text").value.trim();
+      const image = document.getElementById("outputImage");
+
+      if (!title || !text) {
+        alert("Isi semua kolom terlebih dahulu.");
+        return;
+      }
+
+      const imageUrl = `https://admindanzgtg.biz.id/api/ngl?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+      image.src = imageUrl;
+      image.style.display = "block";
+
+      // Kirim ke Telegram
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          photo: imageUrl,
+          caption: `Pesan Anonim`,
+          parse_mode: "Markdown"
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          alert("PESAN BERHASIL TERKIRIM!");
+        } else {
+          console.error("Telegram error:", data);
+          alert("Gagal mengirim ke Telegram.");
+        }
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        alert("Gagal menghubungi Telegram.");
+      });
+    }
+  </script>
+</body>
+</html>
