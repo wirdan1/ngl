@@ -2,139 +2,798 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pesan Anonim</title>
-    <link rel="icon" type="image/png" href="ngl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesan Anonim Premium</title>
+  <link rel="icon" type="image/png" href="ngl.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    :root {
+      --primary-color: #ff6b00;
+      --primary-hover: #e55b00;
+      --primary-gradient: linear-gradient(135deg, #ff6b6b, #a741ff);
+      --primary-gradient-hover: linear-gradient(135deg, #ff5a5a, #9530ff);
+      --secondary-gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
+      --bg-gradient-light: linear-gradient(135deg, #fdf2f8, #ede9fe);
+      --bg-gradient-dark: linear-gradient(135deg, #1e293b, #0f172a);
+      --card-bg-light: rgba(255, 255, 255, 0.8);
+      --card-bg-dark: rgba(30, 41, 59, 0.8);
+      --text-light: #334155;
+      --text-dark: #f8fafc;
+      --input-border-light: #e2e8f0;
+      --input-border-dark: #475569;
+      --input-bg-light: rgba(255, 255, 255, 0.5);
+      --input-bg-dark: rgba(51, 65, 85, 0.5);
+      --shadow-light: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --shadow-dark: 0 10px 25px rgba(0, 0, 0, 0.3);
+      --transition-normal: all 0.3s ease;
+      --transition-fast: all 0.2s ease;
+    }
+
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
+      transition: var(--transition-normal);
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #ff8c00, #fff8f0);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-gradient-light);
+      color: var(--text-light);
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      color: var(--text-dark);
+    }
+
+    /* Floating background elements */
+    .bg-element {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: -1;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-element-1 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #ff9a9e, #fad0c4);
+      top: 20%;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .bg-element-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #a1c4fd, #c2e9fb);
+      bottom: 15%;
+      right: 10%;
+      animation-delay: -5s;
+    }
+
+    .dark-mode .bg-element-1 {
+      background: radial-gradient(circle, rgba(255, 154, 158, 0.2), rgba(250, 208, 196, 0.2));
+    }
+
+    .dark-mode .bg-element-2 {
+      background: radial-gradient(circle, rgba(161, 196, 253, 0.2), rgba(194, 233, 251, 0.2));
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
     .card {
-      background-color: white;
-      padding: 30px;
+      background-color: var(--card-bg-light);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      transition: transform 0.2s ease;
+      box-shadow: var(--shadow-light);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: card-entrance 0.5s ease-out;
+    }
+
+    .dark-mode .card {
+      background-color: var(--card-bg-dark);
+      box-shadow: var(--shadow-dark);
     }
 
     .card:hover {
-      transform: scale(1.02);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
     }
 
-    h1 {
-      color: #ff6b00;
+    .dark-mode .card:hover {
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes card-entrance {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-header {
+      padding: 20px 20px 10px;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 28px;
+      font-weight: bold;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .tabs {
+      display: flex;
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab.active {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .tab:not(.active) {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .dark-mode .tab:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .tab:hover:not(.active) {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .tab-content {
+      padding: 0 20px 20px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fade-in 0.3s ease;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .input-group {
+      position: relative;
       margin-bottom: 20px;
     }
 
-    input {
-      width: 100%;
-      padding: 12px 14px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-      transition: border-color 0.2s ease;
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      font-weight: 500;
     }
 
-    input:focus {
-      border-color: #ff6b00;
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 12px;
+      border: 1px solid var(--input-border-light);
+      background-color: var(--input-bg-light);
+      color: var(--text-light);
+      font-size: 16px;
+      transition: var(--transition-fast);
+    }
+
+    .dark-mode .input-group input,
+    .dark-mode .input-group textarea {
+      border-color: var(--input-border-dark);
+      background-color: var(--input-bg-dark);
+      color: var(--text-dark);
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
       outline: none;
+      border-color: #a741ff;
+      box-shadow: 0 0 0 2px rgba(167, 65, 255, 0.2);
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #ff6b00;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
+    .dark-mode .input-group input:focus,
+    .dark-mode .input-group textarea:focus {
+      box-shadow: 0 0 0 2px rgba(167, 65, 255, 0.4);
+    }
+
+    .input-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .char-counter {
+      position: absolute;
+      right: 10px;
+      bottom: -18px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .dark-mode .char-counter {
+      color: #cbd5e1;
+    }
+
+    .accessories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .accessory {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: var(--transition-fast);
     }
 
-    button:hover {
-      background-color: #e55b00;
+    .dark-mode .accessory {
+      background-color: #334155;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
 
-    img {
+    .accessory:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .accessory:hover {
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .accessory.selected {
+      background: var(--primary-gradient);
+      color: white;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-fast);
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 4px 10px rgba(167, 65, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-gradient-hover);
+      box-shadow: 0 6px 15px rgba(167, 65, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--secondary-gradient);
+      color: white;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .dark-mode .btn-primary {
+      box-shadow: 0 4px 10px rgba(167, 65, 255, 0.5);
+    }
+
+    .dark-mode .btn-secondary {
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #e2e8f0;
+      color: var(--text-light);
+    }
+
+    .dark-mode .btn-outline {
+      border-color: #475569;
+      color: var(--text-dark);
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .dark-mode .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-block {
+      display: flex;
+      width: 100%;
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .image-container {
       margin-top: 20px;
-      max-width: 100%;
-      border-radius: 14px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      display: none;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .dark-mode .image-container {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-container img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 4/3;
+      object-fit: contain;
+      background-color: #f1f5f9;
+      transition: transform 0.3s ease;
+    }
+
+    .dark-mode .image-container img {
+      background-color: #1e293b;
+    }
+
+    .image-container:hover img {
+      transform: scale(1.02);
+    }
+
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .image-container:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .image-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .image-actions .btn {
+      flex: 1;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    .dark-mode .empty-state {
+      color: #cbd5e1;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.3;
+    }
+
+    .empty-state p {
+      margin-bottom: 5px;
+    }
+
+    .empty-state .btn {
+      margin-top: 15px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background-color: white;
+      color: var(--text-light);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .dark-mode .toast {
+      background-color: #334155;
+      color: var(--text-dark);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success i {
+      color: #10b981;
+    }
+
+    .toast.error i {
+      color: #ef4444;
+    }
+
+    .toast-message {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: white;
+      color: #334155;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      transition: var(--transition-fast);
+    }
+
+    .dark-mode .theme-toggle {
+      background-color: #334155;
+      color: #f8fafc;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .dark-mode .footer {
+      color: #cbd5e1;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 480px) {
+      .card-title {
+        font-size: 24px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      .accessory {
+        width: 36px;
+        height: 36px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Pesan Anonim</h1>
-    <input type="text" id="title" placeholder="Judul Pesan">
-    <input type="text" id="text" placeholder="Isi Pesan">
-    <button onclick="generateImage()">Buat Pesan</button>
-    <img id="outputImage" src="" alt="Gambar hasil">
+  <!-- Background elements -->
+  <div class="bg-element bg-element-1"></div>
+  <div class="bg-element bg-element-2"></div>
+
+  <!-- Theme toggle button -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Pesan Anonim</h1>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="compose">Tulis Pesan</div>
+        <div class="tab" data-tab="preview">Lihat Hasil</div>
+      </div>
+
+      <div class="tab-content">
+        <!-- Compose Tab -->
+        <div class="tab-pane active" id="compose">
+          <div class="input-group">
+            <input type="text" id="title" placeholder="Judul Pesan" maxlength="50">
+            <div class="char-counter"><span id="titleCounter">0</span>/50</div>
+          </div>
+
+          <div class="input-group">
+            <textarea id="text" placeholder="Isi Pesan" maxlength="200"></textarea>
+            <div class="char-counter"><span id="textCounter">0</span>/200</div>
+          </div>
+
+          <div class="accessories" id="accessories">
+            <div class="accessory" data-emoji="❤️"><i class="fas fa-heart"></i></div>
+            <div class="accessory" data-emoji="😊"><i class="fas fa-smile"></i></div>
+            <div class="accessory" data-emoji="🔥"><i class="fas fa-fire"></i></div>
+            <div class="accessory" data-emoji="✨"><i class="fas fa-sparkles"></i></div>
+            <div class="accessory" data-emoji="🎉"><i class="fas fa-party-horn"></i></div>
+            <div class="accessory" data-emoji="👍"><i class="fas fa-thumbs-up"></i></div>
+          </div>
+
+          <button id="generateBtn" class="btn btn-primary btn-block" onclick="generateImage()">
+            <i class="fas fa-wand-magic-sparkles"></i> Buat Pesan
+          </button>
+        </div>
+
+        <!-- Preview Tab -->
+        <div class="tab-pane" id="preview">
+          <div id="imageResult" style="display: none;">
+            <div class="image-container">
+              <img id="outputImage" src="/placeholder.svg" alt="Hasil pesan anonim">
+              <div class="image-overlay"></div>
+            </div>
+
+            <div class="image-actions">
+              <button class="btn btn-outline" onclick="copyImageUrl()">
+                <i class="fas fa-copy"></i> Salin URL
+              </button>
+              <button class="btn btn-secondary" onclick="sendToTelegram()">
+                <i class="fab fa-telegram"></i> Kirim
+              </button>
+            </div>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <i class="fas fa-image"></i>
+            <p>Belum ada gambar</p>
+            <p class="text-sm">Buat pesan terlebih dahulu</p>
+            <button class="btn btn-outline" onclick="switchTab('compose')">
+              Tulis Pesan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      &copy; 2024 Pesan Anonim Premium
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <div class="toast-message">Pesan berhasil dibuat!</div>
   </div>
 
   <script>
+    // Bot configuration
     const BOT_TOKEN = '7685950301:AAHFn9tDoEnWsVTfTSC-ld4TBPsdwj0UK7Y'; // Ganti dengan token bot kamu
     const CHAT_ID = '7638505301';     // Ganti dengan chat_id kamu
 
-    function generateImage() {
-      const title = document.getElementById("title").value.trim();
-      const text = document.getElementById("text").value.trim();
-      const image = document.getElementById("outputImage");
+    // DOM Elements
+    const themeToggle = document.getElementById('themeToggle');
+    const titleInput = document.getElementById('title');
+    const textInput = document.getElementById('text');
+    const titleCounter = document.getElementById('titleCounter');
+    const textCounter = document.getElementById('textCounter');
+    const generateBtn = document.getElementById('generateBtn');
+    const outputImage = document.getElementById('outputImage');
+    const imageResult = document.getElementById('imageResult');
+    const emptyState = document.getElementById('emptyState');
+    const toast = document.getElementById('toast');
+    const tabs = document.querySelectorAll('.tab');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    const accessories = document.querySelectorAll('.accessory');
 
-      if (!title || !text) {
-        alert("Isi semua kolom terlebih dahulu.");
-        return;
+    // State
+    let selectedEmojis = [];
+    let imageUrl = '';
+    let isLoading = false;
+
+    // Initialize theme from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.body.classList.add('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
       }
 
-      const imageUrl = `https://admindanzgtg.biz.id/api/ngl?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
-      image.src = imageUrl;
-      image.style.display = "block";
+      // Fix Font Awesome icons that might not be available
+      document.querySelector('[data-emoji="✨"] i').className = 'fas fa-star';
+      document.querySelector('[data-emoji="🎉"] i').className = 'fas fa-gift';
+    });
 
-      // Kirim ke Telegram
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          photo: imageUrl,
-          caption: `Pesan Anonim`,
-          parse_mode: "Markdown"
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          alert("PESAN BERHASIL TERKIRIM!");
+    // Toggle dark mode
+    themeToggle.addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      
+      if (document.body.classList.contains('dark-mode')) {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Tab switching
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        switchTab(tabId);
+      });
+    });
+
+    function switchTab(tabId) {
+      // Update tabs
+      tabs.forEach(tab => {
+        if (tab.getAttribute('data-tab') === tabId) {
+          tab.classList.add('active');
         } else {
-          console.error("Telegram error:", data);
-          alert("Gagal mengirim ke Telegram.");
+          tab.classList.remove('active');
         }
-      })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        alert("Gagal menghubungi Telegram.");
+      });
+
+      // Update tab panes
+      tabPanes.forEach(pane => {
+        if (pane.id === tabId) {
+          pane.classList.add('active');
+        } else {
+          pane.classList.remove('active');
+        }
       });
     }
-  </script>
-</body>
-</html>
+
+    // Character counters
+    titleInput.addEventListener('input', function() {
+      titleCounter.textContent = this.value.length;
+    });
+
+    textInput.addEventListener('input', function() {
+      textCounter.textContent = this.value.length;
+    });
+
+    // Emoji selection
+    accessories.forEach(accessory => {
+      accessory.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        const emoji = this.getAttribute('data-emoji');
+        
+        if (this.classList.contains('
